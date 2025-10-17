@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Child Vaccination Management</title>
+    <link rel="stylesheet" href="styles.css?v=1.0.3" />
+    <!-- Version 1.0.2 - Cache Fix & SMS Features -->
+  </head>
+  <body>
+    <header class="site-header">
+      <h1>Child Vaccination Management</h1>
+      <nav class="top-nav" aria-label="Primary">
+        <button class="nav-btn" data-view="dashboard" aria-pressed="true">Dashboard</button>
+        <button class="nav-btn" data-view="children">Children</button>
+        <button class="nav-btn" data-view="schedule">Schedule</button>
+        <button class="nav-btn" data-view="reports">Reports</button>
+        <button class="nav-btn" data-view="assistant">AI Assistant</button>
+        <button class="nav-btn" data-view="settings">Settings</button>
+        <button class="nav-btn" id="btn-open-camera" title="Open camera for biometric">Open Camera</button>
+      </nav>
+    </header>
+
+    <main id="app" class="container" tabindex="-1">
+      <section id="view-dashboard" class="view is-active" aria-labelledby="dashboard-title">
+        <h2 id="dashboard-title">Dashboard</h2>
+        <div class="cards">
+          <div class="card">
+            <p class="card-label">Children</p>
+            <p class="card-value" id="stat-children">0</p>
+          </div>
+          <div class="card">
+            <p class="card-label">Due this week</p>
+            <p class="card-value" id="stat-due-week">0</p>
+          </div>
+          <div class="card">
+            <p class="card-label">Overdue</p>
+            <p class="card-value" id="stat-overdue">0</p>
+          </div>
+        </div>
+        <div class="panel">
+          <h3>Upcoming Vaccinations</h3>
+          <table class="table" id="table-upcoming" aria-describedby="upcoming-caption">
+            <caption id="upcoming-caption">Next 14 days</caption>
+            <thead>
+              <tr>
+                <th>Child</th>
+                <th>Vaccine</th>
+                <th>Due Date</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <div class="panel">
+          <h3>Health Worker: Verify Identity</h3>
+          <form class="form" id="form-verify">
+            <div class="grid-2">
+              <label>
+                <span>Child ID</span>
+                <input id="verify-child-id" type="text" placeholder="Enter Child UUID" />
+              </label>
+              <label>
+                <span>Action</span>
+                <button class="btn" id="btn-verify-id" type="submit">Verify via Face</button>
+              </label>
+            </div>
+            <div class="actions">
+              <button class="btn" type="button" id="btn-open-camera-hw">Open Camera</button>
+            </div>
+            <div id="verify-result" class="muted" style="margin-top:8px"></div>
+          </form>
+        </div>
+        
+        <div class="panel">
+          <h3>Send SMS Notification to Parents</h3>
+          <form class="form" id="form-sms">
+            <div class="grid-2">
+              <label>
+                <span>Child ID</span>
+                <input id="sms-child-id" type="text" placeholder="Enter Child UUID" />
+              </label>
+              <label>
+                <span>Phone Number</span>
+                <input id="sms-phone" type="tel" placeholder="+91 9876543210 or 9876543210" />
+              </label>
+            </div>
+            <div class="grid-2">
+              <label style="grid-column:1/-1">
+                <span>Message</span>
+                <textarea id="sms-message" placeholder="Enter SMS message..." rows="3"></textarea>
+              </label>
+            </div>
+            <div class="actions">
+              <button class="btn primary" type="submit">Send SMS</button>
+              <button class="btn" type="button" id="btn-sms-template">Use Template</button>
+            </div>
+            <div id="sms-result" class="muted" style="margin-top:8px"></div>
+          </form>
+        </div>
+      </section>
+
+      <section id="view-children" class="view" aria-labelledby="children-title" hidden>
+        <h2 id="children-title">Children</h2>
+        <form id="form-child" class="form" autocomplete="on">
+          <input type="hidden" id="child-id" />
+          <div class="grid-2">
+            <label>
+              <span>Child ID (read-only)</span>
+              <div style="display:flex;gap:8px;align-items:center">
+                <input id="child-id-readonly" type="text" readonly placeholder="Will appear when editing" />
+                <button type="button" class="btn" id="btn-copy-child-id">Copy</button>
+              </div>
+            </label>
+          </div>
+          <div class="grid-2">
+            <label>
+              <span>Full Name</span>
+              <input id="child-name" name="name" type="text" required />
+            </label>
+            <label>
+              <span>Date of Birth</span>
+              <input id="child-dob" name="dob" type="date" required />
+            </label>
+          </div>
+          <div class="grid-2">
+            <label>
+              <span>Guardian Name</span>
+              <input id="child-guardian" name="guardian" type="text" />
+            </label>
+            <label>
+              <span>Contact</span>
+              <input id="child-contact" name="contact" type="tel" />
+            </label>
+          </div>
+          <div class="actions">
+            <button type="submit" class="btn primary" id="btn-save-child">Save</button>
+            <button type="reset" class="btn" id="btn-reset-child">Reset</button>
+            <button type="button" class="btn" id="btn-enroll-current">Enroll Face (current child)</button>
+            <button type="button" class="btn" id="btn-verify-current">Verify Face (current child)</button>
+            <button type="button" class="btn" id="btn-load-sample" title="Add demo child and sample records">Load sample data</button>
+          </div>
+        </form>
+
+        <div class="panel">
+          <h3>Child Records</h3>
+          <table class="table" id="table-children">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>ID</th>
+                <th>DOB</th>
+                <th>Guardian</th>
+                <th>Contact</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="view-schedule" class="view" aria-labelledby="schedule-title" hidden>
+        <h2 id="schedule-title">Schedule</h2>
+        <div class="panel">
+          <p>Standard immunization schedule. Select a child to view personalized dates.</p>
+          <div class="grid-2" style="margin-top:8px">
+            <label>
+              <span>Child UUID (optional)</span>
+              <input id="schedule-child-id" type="text" placeholder="Paste Child UUID to filter" />
+            </label>
+            <label>
+              <span>Vaccine code (optional)</span>
+              <input id="schedule-filter-code" type="text" placeholder="e.g., BCG, OPV1, DPT2" />
+            </label>
+          </div>
+        </div>
+        <div id="schedule-list" class="schedule-list"></div>
+      </section>
+
+      <section id="view-reports" class="view" aria-labelledby="reports-title" hidden>
+        <h2 id="reports-title">Reports</h2>
+        <div class="cards">
+          <div class="card"><p class="card-label">Total Children</p><p class="card-value" id="rep-total-children">0</p></div>
+          <div class="card"><p class="card-label">Vaccines Done</p><p class="card-value" id="rep-done">0</p></div>
+          <div class="card"><p class="card-label">Pending</p><p class="card-value" id="rep-pending">0</p></div>
+          <div class="card"><p class="card-label">Overdue</p><p class="card-value" id="rep-overdue">0</p></div>
+        </div>
+        <div class="panel">
+          <canvas id="report-chart" height="120" aria-label="Vaccination Summary Chart"></canvas>
+        </div>
+        <div class="actions">
+          <button class="btn" id="btn-export-csv">Export CSV</button>
+        </div>
+        <div class="panel">
+          <table class="table" id="table-report">
+            <thead>
+              <tr>
+                <th>Child</th>
+                <th>Vaccine</th>
+                <th>Status</th>
+                <th>Date</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="view-settings" class="view" aria-labelledby="settings-title" hidden>
+        <h2 id="settings-title">Settings</h2>
+        <form id="form-settings" class="form">
+          <label class="switch">
+            <input type="checkbox" id="setting-dark" />
+            <span>Dark mode</span>
+          </label>
+          <label class="switch">
+            <input type="checkbox" id="setting-reminders" checked />
+            <span>Enable reminders</span>
+          </label>
+          <div class="grid-2">
+            <label>
+              <span>API Base URL</span>
+              <input id="setting-api" type="text" placeholder="http://localhost:8080" />
+            </label>
+            <label>
+              <span>Background image URL (optional)</span>
+              <input id="setting-bg" type="text" placeholder="Paste image URL" />
+            </label>
+          </div>
+          <div class="actions">
+            <button class="btn" type="button" id="btn-copy-site-url">Copy site URL</button>
+            <button class="btn" type="button" id="btn-sync-now" title="Sync local data to backend">Sync now</button>
+          </div>
+        </form>
+      </section>
+
+      <section id="view-assistant" class="view" aria-labelledby="assistant-title" hidden>
+        <h2 id="assistant-title">AI Assistant</h2>
+        <div class="panel">
+          <div class="grid-2">
+            <label>
+              <span>Child ID (optional)</span>
+              <input id="ai-child-id" type="text" placeholder="UUID of child" />
+            </label>
+            <label>
+              <span>Language</span>
+              <select id="ai-lang">
+                <option value="auto" selected>Auto</option>
+                <option value="en">English</option>
+                <option value="hi">Hindi</option>
+                <option value="te">Telugu</option>
+                <option value="ta">Tamil</option>
+                <option value="mr">Marathi</option>
+                <option value="bn">Bengali</option>
+                <option value="ur">Urdu</option>
+                <option value="es">Spanish</option>
+                <option value="fr">French</option>
+              </select>
+            </label>
+          </div>
+          <div id="ai-chat" class="chat"></div>
+          <form id="form-ai" class="form" autocomplete="off">
+            <div class="grid-2">
+              <label style="grid-column:1/-1">
+                <span>Message</span>
+                <input id="ai-question" type="text" placeholder="Ask in any language..." />
+              </label>
+            </div>
+            <div class="actions">
+              <button class="btn primary" type="submit">Send</button>
+            </div>
+          </form>
+        </div>
+      </section>
+    </main>
+
+    <div id="camera-modal" class="modal" hidden>
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>Camera</h3>
+          <button class="btn" id="btn-close-camera" aria-label="Close">×</button>
+        </div>
+        <video id="camera-video" autoplay playsinline></video>
+        <canvas id="camera-canvas" hidden></canvas>
+        <div class="actions">
+          <button class="btn" id="btn-back-camera">Back</button>
+          <button class="btn" id="btn-capture">Capture</button>
+          <button class="btn" id="btn-enroll">Enroll Face</button>
+          <button class="btn" id="btn-verify">Verify Face</button>
+        </div>
+        <img id="capture-preview" alt="preview" style="max-width:100%;margin-top:8px" />
+      </div>
+    </div>
+
+    <footer class="site-footer">
+      <small>&copy; <span id="year"></span> Child Vaccination Management</small>
+    </footer>
+
+    <!-- New Voice Assistant Toggle -->
+    <div id="voice-assist" class="vaxi">
+      <button id="va-toggle" class="vaxi-btn" aria-label="Voice assistant">🎙️</button>
+      <div id="va-panel" class="vaxi-panel" hidden>
+        <div class="vaxi-header">
+          <div style="display:flex;align-items:center;gap:8px">
+            <button id="va-back" class="btn" type="button" aria-label="Back">◀</button>
+            <strong>Voice Assistant</strong>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <select id="va-lang" title="Language" style="max-width:120px">
+              <option value="en-IN" selected>English</option>
+              <option value="kn-IN">Kannada</option>
+            </select>
+            <button id="va-close" class="btn" type="button" aria-label="Close">×</button>
+          </div>
+        </div>
+        <div id="va-chat" class="vaxi-chat" aria-live="polite"></div>
+        <form id="va-form" class="vaxi-form" autocomplete="off">
+          <input id="va-input" type="text" placeholder="Say 'add child' or ask a question…" />
+          <button id="va-mic" type="button" title="Voice">🎤</button>
+          <button class="btn primary" type="submit">Send</button>
+        </form>
+      </div>
+    </div>
+
+    <script src="app.js?v=1.0.3"></script>
+    <script>if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js?v=1.0.3').catch(()=>{})}</script>
+  </body>
+</html>
+
+

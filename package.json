@@ -1,0 +1,23 @@
+{
+  "name": "child-vaccination-management",
+  "version": "1.0.0",
+  "description": "Child Vaccination Management System",
+  "main": "server/server.js",
+  "scripts": {
+    "start": "node server/server.js",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "server": "cd server && node server.js",
+    "client": "npx serve . --listen 3000",
+    "install-all": "npm install && cd server && npm install",
+    "setup": "npm run install-all && npm run migrate",
+    "migrate": "cd server && node src/migrate.js"
+  },
+  "dependencies": {
+    "concurrently": "^8.2.2",
+    "serve": "^14.2.5"
+  },
+  "devDependencies": {},
+  "keywords": ["vaccination", "child", "health", "management"],
+  "author": "Your Name",
+  "license": "MIT"
+}

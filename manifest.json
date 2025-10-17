@@ -1,0 +1,30 @@
+{
+  "manifest_version": 3,
+  "name": "Child Vaccination Management",
+  "version": "1.0.2",
+  "description": "Manage child vaccination schedules with biometric verification and SMS notifications",
+  "permissions": [
+    "storage",
+    "camera",
+    "notifications"
+  ],
+  "host_permissions": [
+    "http://localhost:8080/*",
+    "https://api.twilio.com/*"
+  ],
+  "action": {
+    "default_popup": "index.html",
+    "default_title": "Child Vaccination Management"
+  },
+  "background": {
+    "service_worker": "sw.js"
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self';"
+  },
+  "icons": {
+    "16": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjE2IiBoZWlnaHQ9IjE2IiByeD0iMiIgZmlsbD0iIzAwN2RjZiIvPgo8cGF0aCBkPSJNOCA0TDEwIDZIOFY0WiIgZmlsbD0id2hpdGUiLz4KPHBhdGggZD0iTTggOEwxMCAxMEg4VjhaIiBmaWxsPSJ3aGl0ZSIvPgo8cGF0aCBkPSJNOCAxMkwxMCAxNEg4VjEyWiIgZmlsbD0id2hpdGUiLz4KPC9zdmc+",
+    "48": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDgiIGhlaWdodD0iNDgiIHZpZXdCb3g9IjAgMCA0OCA0OCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjQ4IiBoZWlnaHQ9IjQ4IiByeD0iNiIgZmlsbD0iIzAwN2RjZiIvPgo8cGF0aCBkPSJNMjQgMTJMMzAgMThIMjRWMTJaIiBmaWxsPSJ3aGl0ZSIvPgo8cGF0aCBkPSJNMjQgMjRMMzAgMzBIMjRWMjRaIiBmaWxsPSJ3aGl0ZSIvPgo8cGF0aCBkPSJNMjQgMzZMMzAgNDJIMjRWMzZaIiBmaWxsPSJ3aGl0ZSIvPgo8L3N2Zz4=",
+    "128": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTI4IiBoZWlnaHQ9IjEyOCIgdmlld0JveD0iMCAwIDEyOCAxMjgiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMjgiIGhlaWdodD0iMTI4IiByeD0iMTYiIGZpbGw9IiMwMDdkY2YiLz4KPHA0aCBkPSJNNjQgMzJMODAgNDhINjRWMzJaIiBmaWxsPSJ3aGl0ZSIvPgo8cGF0aCBkPSJNNjQgNjRMODAgODBINjRWNjRaIiBmaWxsPSJ3aGl0ZSIvPgo8cGF0aCBkPSJNNjQgOTZMODAgMTEySDY0Vjk2WiIgZmlsbD0id2hpdGUiLz4KPC9zdmc+"
+  }
+}
